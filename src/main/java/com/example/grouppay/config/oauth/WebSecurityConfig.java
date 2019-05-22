@@ -86,6 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/image/**").permitAll()
                 .antMatchers("/index").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/alipay/**").permitAll()
                 // 对于获取token的rest api要允许匿名访问
                 .antMatchers("/auth/**").permitAll()
 

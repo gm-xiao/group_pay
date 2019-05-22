@@ -127,7 +127,7 @@ public class GeneratorUtils implements Serializable {
         String dataUrl = DATA_PATH
                 .replace("IP", "127.0.0.1")
                 .replace("PORT", "3306")
-                .replace("DATABASE", "grouppay");
+                .replace("DATABASE", "group_pay");
         GeneratorUtils generatorUtils = new GeneratorBuilder()
                 .outputDir("D:/IdeaProjects/group_pay/src/main/java")
                 .author("gm")
