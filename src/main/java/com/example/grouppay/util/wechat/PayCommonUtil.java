@@ -22,6 +22,9 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.*;
  
 public class PayCommonUtil {
@@ -181,7 +184,68 @@ public class PayCommonUtil {
           }  
           return null;  
     }  
-      
+
+    public static String PKCSRequest(String requestUrl, String outputStr, String keyPath) throws Exception {
+        // 返回结果
+        StringBuilder res = new StringBuilder("");
+
+        // PKCS12的密码
+        String PKCS12 = "";
+
+        // 指定读取证书格式为PKCS12
+        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+
+        // 读取本机存放的PKCS12证书文件
+        FileInputStream instream = new FileInputStream(new File(keyPath));
+
+        // 指定PKCS12的密码
+        try {
+            keyStore.load(instream, "".toCharArray());
+        }  finally {
+            instream.close();
+        }
+
+        // 指定TLS版本
+        SSLContext sslcontext = SSLContexts.custom()
+                .loadKeyMaterial(keyStore, PKCS12.toCharArray())
+                .build();
+
+        // 设置httpclient的SSLSocketFactory
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                sslcontext,
+                new String[]{"TLSv1"},
+                null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf)
+                .build();
+
+        // 发起请求
+        try {
+            HttpPost post = new HttpPost(requestUrl);
+            StringEntity entityStr = new StringEntity(outputStr , Consts.UTF_8);
+            post.setEntity(entityStr);
+            CloseableHttpResponse response = httpclient.execute(post);
+            try {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
+                    String text = "";
+                    res.append(text);
+                    while ((text = bufferedReader.readLine()) != null) {
+                        res.append(text);
+                    }
+                }
+                EntityUtils.consume(entity);
+            } finally {
+                response.close();
+            }
+        } finally {
+            httpclient.close();
+        }
+        return res.toString();
+    }
+
     //退款的请求方法  
     public static String httpsRequest2(String requestUrl, String requestMethod, String outputStr) throws Exception {  
           KeyStore keyStore  = KeyStore.getInstance("PKCS12");  

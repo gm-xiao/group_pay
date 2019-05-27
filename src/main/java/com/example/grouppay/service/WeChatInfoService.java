@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface WeChatInfoService extends IService<WeChatInfo> {
 
+    WeChatInfo findByUid(String uid);
+
 }
