@@ -34,5 +34,10 @@ public class WeChatOrderRequest {
      */
     private BigDecimal totalFee;
 
+    /**
+     * 订单优惠标记，使用代金券
+     */
+    private String goodsTag;
+
 
 }

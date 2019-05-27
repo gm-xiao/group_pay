@@ -90,6 +90,7 @@ public class WeChatPayController {
         parameterMap.put("mch_id", weChatInfo.getMchId());
         parameterMap.put("nonce_str", randomString);
         parameterMap.put("body", weChatOrderRequest.getBody());
+        parameterMap.put("goods_tag", weChatOrderRequest.getGoodsTag());
         parameterMap.put("out_trade_no", weChatOrderRequest.getOutTradeNo());
         parameterMap.put("fee_type", "CNY");
         BigDecimal total = weChatOrderRequest.getTotalFee().multiply(new BigDecimal(100));  //接口中参数支付金额单位为【分】，参数值不能带小数，所以乘以100
